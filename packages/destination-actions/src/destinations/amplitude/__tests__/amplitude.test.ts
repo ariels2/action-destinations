@@ -456,29 +456,28 @@ describe('Amplitude', () => {
         ])
       })
     })
-  })
 
-  it('should not send parsed user agent properties when setting is false', async () => {
-    const event = createTestEvent({
-      timestamp: '2021-04-12T16:32:37.710Z',
-      event: 'Test Event',
-      context: {
-        device: {
-          id: 'foo'
-        },
-        userAgent:
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
+    it('should not send parsed user agent properties when setting is false', async () => {
+      const event = createTestEvent({
+        timestamp: '2021-04-12T16:32:37.710Z',
+        event: 'Test Event',
+        context: {
+          device: {
+            id: 'foo'
+          },
+          userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36'
+        }
+      })
+      const mapping = {
+        userAgentParsing: false
       }
-    })
-    const mapping = {
-      userAgentParsing: false
-    }
-    nock('https://api2.amplitude.com/2').post('/httpapi').reply(200, {})
-    const responses = await testDestination.testAction('logEvent', { event, mapping, useDefaultMappings: true })
-    expect(responses.length).toBe(1)
-    expect(responses[0].status).toBe(200)
-    expect(responses[0].data).toMatchObject({})
-    expect(responses[0].options.json).toMatchInlineSnapshot(`
+      nock('https://api2.amplitude.com/2').post('/httpapi').reply(200, {})
+      const responses = await testDestination.testAction('logEvent', { event, mapping, useDefaultMappings: true })
+      expect(responses.length).toBe(1)
+      expect(responses[0].status).toBe(200)
+      expect(responses[0].data).toMatchObject({})
+      expect(responses[0].options.json).toMatchInlineSnapshot(`
       Object {
         "api_key": undefined,
         "events": Array [
@@ -497,6 +496,7 @@ describe('Amplitude', () => {
         "options": undefined,
       }
     `)
+    })
   })
 
   describe('mapUser', () => {
